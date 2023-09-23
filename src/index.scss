@@ -1,0 +1,33 @@
+@import './assets/styles/variables.scss';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  color: $color-main;
+  font-weight: 400;
+  font-size: 14px;
+  font-family: Roboto, sans-serif;
+  background-color: $background-color;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}

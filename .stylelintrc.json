@@ -1,0 +1,19 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-rational-order"],
+  "plugins": ["stylelint-scss", "stylelint-order", "stylelint-config-rational-order/plugin"],
+  "rules": {
+    "at-rule-no-unknown": null,
+    "scss/at-rule-no-unknown": true,
+    "import-notation": "string",
+
+    "order/properties-order": [],
+    "plugin/rational-order": [
+      true,
+      {
+        "border-in-box-model": false,
+        "empty-line-between-groups": false
+      }
+    ]
+  },
+  "customSyntax": "postcss-scss"
+}
