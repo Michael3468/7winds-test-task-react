@@ -46,7 +46,14 @@ const Header = () => {
                   !index ? ' header__navigation-item_active' : ''
                 }`}
               >
-                {item.title}
+                <a
+                  className={`header__navigation-item-link ${
+                    !index ? ' header__navigation-item-link_active' : ''
+                  }`}
+                  href={item.link}
+                >
+                  {item.title}
+                </a>
               </li>
             ))}
           </ul>
