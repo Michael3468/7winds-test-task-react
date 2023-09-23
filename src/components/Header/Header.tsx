@@ -1,7 +1,7 @@
 import arrowBack from './img/arrow-back.svg';
 import menu from './img/menu.svg';
 
-import './header.styles.scss';
+import './Header.styles.scss';
 
 const navigation = [
   { link: '/', title: 'Просмотр' },
