@@ -4,6 +4,7 @@
   "rules": {
     "at-rule-no-unknown": null,
     "scss/at-rule-no-unknown": true,
+    "import-notation": "string",
 
     "order/properties-order": [],
     "plugin/rational-order": [
