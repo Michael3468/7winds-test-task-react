@@ -9,6 +9,7 @@
   &__container {
     display: flex;
     gap: 0 1.8rem;
+
     @include container;
   }
 
@@ -29,11 +30,19 @@
     list-style: none;
 
     &-item {
-      padding: 0.3rem 0.2rem 0.6rem 0.2rem;
+      padding: 0.3rem 0.2rem 0.6rem;
       cursor: pointer;
 
       &_active {
         border-bottom: 0.15rem solid $color-main;
+      }
+
+      &-link {
+        color: $color-second;
+
+        &_active {
+          color: $color-main;
+        }
       }
     }
   }

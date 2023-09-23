@@ -8,8 +8,9 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "stylelint": "stylelint **/*.scss",
-    "stylelint-fix": "stylelint **/*.scss --fix",
+    "stylelint": "stylelint **/*.scss **/**/**/*.scss",
+    "stylelint-fix": "stylelint **/*.scss **/**/**/*.scss --fix",
+    "cml": "npm run stylelint-fix && npm run stylelint && clear && git status && npm run cm",
     "cm": "cz"
   },
   "dependencies": {

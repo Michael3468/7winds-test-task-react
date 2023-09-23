@@ -11,12 +11,12 @@ $height: 100vh;
     @include container;
 
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     height: $caption-height;
     padding-right: 0.5rem;
-    border-bottom: $border;
     border-right: $border;
+    border-bottom: $border;
 
     &-caption {
       font-size: 0.845rem;
@@ -36,8 +36,9 @@ $height: 100vh;
 
   &__nav {
     @include container;
-    border-right: $border;
+
     height: $height;
+    border-right: $border;
 
     &-items {
       display: flex;
