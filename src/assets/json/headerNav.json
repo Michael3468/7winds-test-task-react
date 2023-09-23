@@ -1,0 +1,6 @@
+{
+  "links": [
+    { "link": "/", "title": "Просмотр" },
+    { "link": "/management", "title": "Управление" }
+  ]
+}

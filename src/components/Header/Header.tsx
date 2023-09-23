@@ -1,41 +1,59 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+import { INavigation } from './Header.types';
 import arrowBack from './img/arrow-back.svg';
 import menu from './img/menu.svg';
 
 import './Header.styles.scss';
 
-const navigation = [
-  { link: '/', title: 'Просмотр' },
-  { link: '/management', title: 'Управление' },
-];
+const Header = () => {
+  const [navigation, setNavigation] = useState<INavigation[]>([]);
 
-const Header = () => (
-  <header className="header">
-    <div className="header__container">
-      <div className="header__buttons">
-        <button className="header__button" type="button">
-          <img alt="menu" className="header__menu" src={menu} />
-        </button>
+  const getHeaderNavData = async () => {
+    try {
+      const { data } = await axios.get('/src/assets/json/headerNav.json');
+      setNavigation(data.links);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
 
-        <button className="header__button" type="button">
-          <img alt="arrow back" className="header__arrow-back" src={arrowBack} />
-        </button>
+  useEffect(() => {
+    getHeaderNavData();
+  }, []);
+
+  return (
+    <header className="header">
+      <div className="header__container">
+        <div className="header__buttons">
+          <button className="header__button" type="button">
+            <img alt="menu" className="header__menu" src={menu} />
+          </button>
+
+          <button className="header__button" type="button">
+            <img alt="arrow back" className="header__arrow-back" src={arrowBack} />
+          </button>
+        </div>
+
+        <nav>
+          <ul className="header__navigation">
+            {navigation.map((item, index) => (
+              <li
+                key={item.title}
+                className={`header__navigation-item${
+                  !index ? ' header__navigation-item_active' : ''
+                }`}
+              >
+                {item.title}
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-
-      <nav>
-        <ul className="header__navigation">
-          {navigation.map((item, index) => (
-            <li
-              className={`header__navigation-item${
-                !index ? ' header__navigation-item_active' : ''
-              }`}
-            >
-              {item.title}
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  </header>
-);
+    </header>
+  );
+};
 
 export default Header;
