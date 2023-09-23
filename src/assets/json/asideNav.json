@@ -1,0 +1,19 @@
+{
+  "links": [
+    { "link": "/link1", "title": "По проекту" },
+    { "link": "/link2", "title": "Объекты" },
+    { "link": "/link3", "title": "РД" },
+    { "link": "/link4", "title": "МТО" },
+    { "link": "/link5", "title": "СМП" },
+    { "link": "/link6", "title": "График" },
+    { "link": "/link7", "title": "МиМ" },
+    { "link": "/link8", "title": "Рабочие" },
+    { "link": "/link9", "title": "Капвложения" },
+    { "link": "/link10", "title": "Бюджет" },
+    { "link": "/link11", "title": "Финансирование" },
+    { "link": "/link12", "title": "Панорамы" },
+    { "link": "/link13", "title": "Камеры" },
+    { "link": "/link14", "title": "Поручения" },
+    { "link": "/link15", "title": "Контрагенты" }
+  ]
+}
