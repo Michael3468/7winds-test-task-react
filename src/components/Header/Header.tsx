@@ -21,13 +21,19 @@ const Header = () => (
         </button>
       </div>
 
-      <ul className="header__navigation">
-        {navigation.map((item, index) => (
-          <li className={`header__navigation-item${!index ? ' header__navigation-item_active' : ''}`}>
-            {item.title}
-          </li>
-        ))}
-      </ul>
+      <nav>
+        <ul className="header__navigation">
+          {navigation.map((item, index) => (
+            <li
+              className={`header__navigation-item${
+                !index ? ' header__navigation-item_active' : ''
+              }`}
+            >
+              {item.title}
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   </header>
 );
