@@ -1,0 +1,59 @@
+@import '../../assets/styles/variables.scss';
+@import '../../assets/styles/mixins.scss';
+
+$height: 100vh;
+
+.aside {
+  max-width: 14.7rem;
+  height: $height;
+
+  &__header {
+    @include container;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: $caption-height;
+    padding-right: 0.5rem;
+    border-bottom: $border;
+    border-right: $border;
+
+    &-caption {
+      font-size: 0.845rem;
+      line-height: 1rem;
+    }
+
+    &-text {
+      font-size: 0.63rem;
+    }
+
+    &-expand-button {
+      width: 1.5rem;
+      height: 1.5rem;
+      background: url('./img/expand-icon.svg') no-repeat;
+    }
+  }
+
+  &__nav {
+    @include container;
+    border-right: $border;
+    height: $height;
+
+    &-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem 0;
+      padding-top: 0.34rem;
+      list-style: none;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+
+      &-image {
+        margin-right: 0.9rem;
+      }
+    }
+  }
+}
