@@ -1,12 +1,10 @@
 @import '../../assets/styles/variables.scss';
 @import '../../assets/styles/mixins.scss';
 
-$height: 100vh;
-
 .aside {
   width: 100%;
   max-width: 14.7rem;
-  height: $height;
+  height: $height-full;
 
   &__header {
     @include container;
@@ -38,7 +36,7 @@ $height: 100vh;
   &__nav {
     @include container;
 
-    height: $height;
+    height: $height-full;
     border-right: $border;
 
     &-items {

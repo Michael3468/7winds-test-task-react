@@ -1,7 +1,27 @@
+import { useEffect, useState } from 'react';
+
+import { eID } from '../../assets/constants';
+import useFetch from '../../hooks/useFetch';
+import formattedNumber from './DataTable.service';
+import { ITableData } from './DataTable.types';
 import './DataTable.styles.scss';
 
 const DataTable = () => {
-  const a = 0;
+  const { data, isLoading, error } = useFetch(`v1/outlay-rows/entity/${eID}/row/list`);
+  const [tableData, setTableData] = useState<ITableData[]>([]);
+
+  useEffect(() => {
+    if (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (data) {
+      setTableData(() => data as ITableData[]);
+    }
+  }, [data]);
 
   return (
     <div className="data-table">
@@ -22,16 +42,28 @@ const DataTable = () => {
             </tr>
           </thead>
 
-          <tbody className="data-table__table-body">
-            <tr className="data-table__table-body-row">
-              <td className="data-table__table-body-cell">val1</td>
-              <td className="data-table__table-body-cell">val2</td>
-              <td className="data-table__table-body-cell">val3</td>
-              <td className="data-table__table-body-cell">val4</td>
-              <td className="data-table__table-body-cell">val5</td>
-              <td className="data-table__table-body-cell">val6</td>
-            </tr>
-          </tbody>
+          {isLoading ? (
+            <div>Loading...</div>
+          ) : (
+            <tbody className="data-table__table-body">
+              {tableData?.map((item) => (
+                <tr key={item.id} className="data-table__table-body-row">
+                  <td className="data-table__table-body-cell">{item.id}</td>
+                  <td className="data-table__table-body-cell">{item.rowName}</td>
+                  <td className="data-table__table-body-cell">
+                    {formattedNumber(item.salary, ' ')}
+                  </td>
+                  <td className="data-table__table-body-cell">
+                    {formattedNumber(item.equipmentCosts)}
+                  </td>
+                  <td className="data-table__table-body-cell">{formattedNumber(item.overheads)}</td>
+                  <td className="data-table__table-body-cell">
+                    {formattedNumber(item.estimatedProfit)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>
