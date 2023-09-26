@@ -1,0 +1,97 @@
+@import '../../assets/styles/variables.scss';
+
+.data-table {
+  width: 100%;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    height: $caption-height;
+    border-right: $border;
+    border-left: $border;
+
+    &-caption {
+      margin: 0 0.9rem;
+    }
+  }
+
+  &__table-container {
+    height: 100%;
+    min-height: $height-full;
+    margin-top: -0.05rem;
+    padding: 0 0.55rem;
+    background-color: $background-color-table;
+    border-top: $border;
+    border-left: $border;
+  }
+
+  &__table {
+    width: 100%;
+
+    &-header {
+      height: $caption-height;
+
+      &-cell {
+        padding: 0 0.8rem;
+        letter-spacing: -0.015rem;
+        text-align: start;
+      }
+    }
+
+    &-body {
+      &-row {
+        border-top: $border;
+      }
+
+      &-cell {
+        position: relative;
+        height: 3.75rem;
+        padding-left: 0.78rem;
+        letter-spacing: 0.01rem;
+
+        &-line {
+          $border-line: 0.1rem solid white;
+
+          &_vertical {
+            position: absolute;
+            top: 2.25rem;
+            height: 3.3rem;
+            border-left: $border-line;
+          }
+
+          &_horizontal {
+            position: absolute;
+            top: 1.75rem;
+            width: 0.67rem;
+            border-top: $border-line;
+          }
+        }
+      }
+    }
+  }
+}
+
+.cell-1 {
+  width: 6.5%;
+}
+
+.cell-2 {
+  width: auto;
+}
+
+.cell-3 {
+  width: 12%;
+}
+
+.cell-4 {
+  width: 12%;
+}
+
+.cell-5 {
+  width: 12%;
+}
+
+.cell-6 {
+  width: 12%;
+}

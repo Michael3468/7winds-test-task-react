@@ -1,15 +1,16 @@
-import { Aside, Header } from './components';
+import { Aside, DataTable, Header } from './components';
 
 import './App.scss';
 
 const App = () => (
-  <div>
+  <>
     <Header />
 
     <main>
       <Aside />
+      <DataTable />
     </main>
-  </div>
+  </>
 );
 
 export default App;

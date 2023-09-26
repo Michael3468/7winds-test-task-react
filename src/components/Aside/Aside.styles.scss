@@ -1,11 +1,10 @@
 @import '../../assets/styles/variables.scss';
 @import '../../assets/styles/mixins.scss';
 
-$height: 100vh;
-
 .aside {
+  width: 100%;
   max-width: 14.7rem;
-  height: $height;
+  height: 100%;
 
   &__header {
     @include container;
@@ -15,7 +14,6 @@ $height: 100vh;
     justify-content: space-between;
     height: $caption-height;
     padding-right: 0.5rem;
-    border-right: $border;
     border-bottom: $border;
 
     &-caption {
@@ -37,8 +35,7 @@ $height: 100vh;
   &__nav {
     @include container;
 
-    height: $height;
-    border-right: $border;
+    height: $height-full;
 
     &-items {
       display: flex;
