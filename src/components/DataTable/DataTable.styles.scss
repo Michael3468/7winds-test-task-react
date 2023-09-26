@@ -50,6 +50,21 @@
         padding-left: 0.78rem;
         letter-spacing: 0.01rem;
 
+        &-level-icons {
+          position: relative;
+          z-index: 10;
+          display: flex;
+          gap: 0 0.35rem;
+          width: fit-content;
+          padding: 0.15rem 0.4rem 0.15rem 0.15rem;
+          background-color: $background-color-table;
+          border-radius: 0.4rem;
+
+          &-trash {
+            visibility: hidden;
+          }
+        }
+
         &-line {
           $border-line: 0.1rem solid white;
 
@@ -94,4 +109,18 @@
 
 .cell-6 {
   width: 12%;
+}
+
+/* stylelint-disable selector-class-pattern */
+.data-table__table-body-row:hover
+  > .data-table__table-body-cell
+  .data-table__table-body-cell-level-icons-trash {
+  visibility: visible;
+  cursor: pointer;
+}
+
+.data-table__table-body-row:hover
+  > .data-table__table-body-cell
+  .data-table__table-body-cell-level-icons {
+  background-color: $color-third;
 }
