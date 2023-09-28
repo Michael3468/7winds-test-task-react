@@ -13,7 +13,7 @@ body {
   color: $color-main;
   font-weight: 400;
   font-size: 14px;
-  font-family: Roboto, sans-serif;
+  font-family: $font-main;
   background-color: $background-color;
 }
 
@@ -37,7 +37,14 @@ table {
 }
 
 button {
+  height: fit-content;
   padding: 0;
+  background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+input {
+  font-size: inherit;
+  font-family: inherit;
 }
