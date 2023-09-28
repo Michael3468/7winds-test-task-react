@@ -61,10 +61,6 @@ $padding: 0.8rem;
           padding: 0.15rem 0.4rem 0.15rem 0.15rem;
           background-color: $background-color-table;
           border-radius: 0.4rem;
-
-          &-trash {
-            visibility: hidden;
-          }
         }
 
         &-line {
@@ -122,10 +118,11 @@ $padding: 0.8rem;
   width: 12%;
 }
 
+// button-remove-row from ButtonRemoveRow component
 /* stylelint-disable selector-class-pattern */
 .data-table__table-body-row:hover
   > .data-table__table-body-cell
-  .data-table__table-body-cell-level-icons-trash {
+  .button-remove-row {
   visibility: visible;
   cursor: pointer;
 }

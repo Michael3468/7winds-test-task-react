@@ -2,7 +2,6 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { eID } from '../../assets/constants';
 import useFetch from '../../hooks/useFetch';
-import request from '../../utils/request';
 import {
   changeRow,
   checkIsRowFinishedEditing,
@@ -15,8 +14,10 @@ import {
   updateRowsDataFromServer,
 } from './DataTable.service';
 import { IEditableRows, ITableData, TTableDataItemKey } from './DataTable.types';
+
+import { ButtonRemoveRow } from '..';
+
 import levelIcon from './img/level-icon.svg';
-import trashIcon from './img/trash-icon.svg';
 
 import './DataTable.styles.scss';
 
@@ -24,23 +25,6 @@ const DataTable = () => {
   const { data, isLoading, error } = useFetch(`v1/outlay-rows/entity/${eID}/row/list`);
   const [tableData, setTableData] = useState<ITableData[]>([]);
   const [editableRows, setEditableRows] = useState<IEditableRows[]>([]);
-
-  const handleRemoveIconClick = async (rowId: number) => {
-    try {
-      const response = await request.delete(`/v1/outlay-rows/entity/${eID}/row/${rowId}/delete`);
-
-      if (response.status === 200) {
-        const res = await request.get(`v1/outlay-rows/entity/${eID}/row/list`);
-
-        if (res.data) {
-          setTableData(() => res.data);
-        }
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
-  };
 
   const handleRowClick = async (rowId: number) => {
     const editableRowsStatus = updateEditableRowsStatus(editableRows, rowId);
@@ -110,12 +94,8 @@ const DataTable = () => {
                 className="data-table__table-body-cell-level-icons-level"
                 src={levelIcon}
               />
-              <img
-                alt="remove row icon"
-                className="data-table__table-body-cell-level-icons-trash"
-                src={trashIcon}
-                onClick={() => handleRemoveIconClick(item.id)}
-              />
+
+              <ButtonRemoveRow rowId={item.id} setTableData={setTableData} />
             </div>
 
             {/* horizontal line */}
