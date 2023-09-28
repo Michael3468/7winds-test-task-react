@@ -1,8 +1,4 @@
-import { ITableData } from './DataTable.types';
-
-function formattedNumber(num: number, separator?: string): string {
-  return num.toLocaleString().replace(/,/g, separator ?? ' ');
-}
+import { IEditableRows, ITableData } from './DataTable.types';
 
 function countNestedElements(arr: ITableData) {
   let count = 0;
@@ -24,4 +20,14 @@ function countNestedElements(arr: ITableData) {
   return rez;
 }
 
-export { countNestedElements, formattedNumber };
+function formattedNumber(num: number, separator?: string): string {
+  return num.toLocaleString().replace(/,/g, separator ?? ' ');
+}
+
+const isRowEditable = (itemId: number, rows: IEditableRows[]): boolean => {
+  const filteredRows = rows.filter((row) => row.id === itemId);
+
+  return filteredRows[0].isEditable;
+};
+
+export { countNestedElements, formattedNumber, isRowEditable };

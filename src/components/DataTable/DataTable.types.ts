@@ -1,3 +1,8 @@
+interface IEditableRows {
+  id: number;
+  isEditable: boolean;
+}
+
 interface ITableData {
   id: number;
   rowName: string;
@@ -14,5 +19,6 @@ interface ITableData {
   supportCosts?: number;
 }
 
-// eslint-disable-next-line import/prefer-default-export
-export type { ITableData };
+type TTableDataItemKey = 'rowName' | 'salary' | 'equipmentCosts' | 'overheads' | 'estimatedProfit';
+
+export type { IEditableRows, ITableData, TTableDataItemKey };
