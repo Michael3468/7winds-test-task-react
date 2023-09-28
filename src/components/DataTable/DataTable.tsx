@@ -3,7 +3,17 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { eID } from '../../assets/constants';
 import useFetch from '../../hooks/useFetch';
 import request from '../../utils/request';
-import { countNestedElements, formattedNumber, isRowEditable } from './DataTable.service';
+import {
+  changeRow,
+  checkIsRowFinishedEditing,
+  countNestedElements,
+  findUpdatedRow,
+  formattedNumber,
+  isRowEditable,
+  updateEditableRowsStatus,
+  updateRowOnServer,
+  updateRowsDataFromServer,
+} from './DataTable.service';
 import { IEditableRows, ITableData, TTableDataItemKey } from './DataTable.types';
 import levelIcon from './img/level-icon.svg';
 import trashIcon from './img/trash-icon.svg';
@@ -15,9 +25,9 @@ const DataTable = () => {
   const [tableData, setTableData] = useState<ITableData[]>([]);
   const [editableRows, setEditableRows] = useState<IEditableRows[]>([]);
 
-  const handleRemoveIconClick = async (itemId: number) => {
+  const handleRemoveIconClick = async (rowId: number) => {
     try {
-      const response = await request.delete(`/v1/outlay-rows/entity/${eID}/row/${itemId}/delete`);
+      const response = await request.delete(`/v1/outlay-rows/entity/${eID}/row/${rowId}/delete`);
 
       if (response.status === 200) {
         const res = await request.get(`v1/outlay-rows/entity/${eID}/row/list`);
@@ -32,47 +42,19 @@ const DataTable = () => {
     }
   };
 
-  const updateEditableRows = (rows: IEditableRows[], itemId: number) =>
-    rows.map((row) => {
-      if (row.id === itemId) {
-        return { ...row, isEditable: !row.isEditable };
-      }
-      return row;
-    });
+  const handleRowClick = async (rowId: number) => {
+    const editableRowsStatus = updateEditableRowsStatus(editableRows, rowId);
 
-  const checkIsRowEdited = (updatedRows: IEditableRows[], itemId: number): boolean => {
-    const editedRows = updatedRows.filter((row) => row.id === itemId);
-    return !editedRows[0].isEditable;
-  };
+    setEditableRows(() => editableRowsStatus);
 
-  const handleRowClick = async (itemId: number) => {
-    const updatedEditableRows = updateEditableRows(editableRows, itemId);
+    const isRowFinishedEdited = checkIsRowFinishedEditing(editableRowsStatus, rowId);
 
-    setEditableRows(() => updatedEditableRows);
-
-    const isRowEdited = checkIsRowEdited(updatedEditableRows, itemId);
-
-    if (isRowEdited) {
+    if (isRowFinishedEdited) {
       try {
-        // update row
-        const updatedRow: ITableData[] = [];
-        const findUpdatedRow = (arr: ITableData[]): void => {
-          arr.forEach((item) => {
-            if (item.total) {
-              findUpdatedRow(item.child);
-            }
+        const updatedRow = findUpdatedRow(tableData, rowId);
 
-            if (item.id === itemId) updatedRow.push(item);
-          });
-        };
-
-        findUpdatedRow(tableData);
-
-        await request.post(`/v1/outlay-rows/entity/${eID}/row/${itemId}/update`, updatedRow[0]);
-
-        // get updated data from server
-        const response = await request.get(`v1/outlay-rows/entity/${eID}/row/list`);
-        setTableData(response.data);
+        await updateRowOnServer(updatedRow, rowId);
+        await updateRowsDataFromServer(setTableData);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.log(err);
@@ -80,7 +62,7 @@ const DataTable = () => {
     }
   };
 
-  const initEditableRows = useCallback(
+  const initEditableRowsStatus = useCallback(
     (arr: ITableData[]) => {
       const initRows = (dataArr: ITableData[]) => {
         dataArr.forEach((item) => {
@@ -102,42 +84,11 @@ const DataTable = () => {
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement>,
-    tableDataItem: ITableData,
-    tableDataItemKey: TTableDataItemKey,
+    row: ITableData,
+    rowKey: TTableDataItemKey,
   ) => {
-    const value = event.target?.value;
-
-    const valueWithoutSpaces = value.replace(/ /g, '');
-    const isNumberType = !Number.isNaN(Number(valueWithoutSpaces));
-
-    const isInputValueTypeCorrect = () =>
-      (tableDataItemKey !== 'rowName' && isNumberType) || tableDataItemKey === 'rowName';
-
-    let updatedRows: ITableData[] = [];
-
-    if (isInputValueTypeCorrect()) {
-      const updateRow = (arr: ITableData[]) => {
-        updatedRows = arr.filter((dataItem) => {
-          if (dataItem.total) {
-            updateRow(dataItem.child);
-          }
-
-          if (dataItem.id === tableDataItem.id) {
-            // eslint-disable-next-line no-param-reassign
-            dataItem[tableDataItemKey] = isNumberType
-              ? (Number(valueWithoutSpaces) as never)
-              : (value as never);
-          }
-          return dataItem;
-        });
-
-        return updatedRows;
-      };
-
-      updateRow(tableData);
-
-      setTableData(() => updatedRows);
-    }
+    const { value } = event.target;
+    changeRow(value, row, rowKey, tableData, setTableData);
   };
 
   function renderNestedArr(arr: ITableData[], level: number = 0) {
@@ -266,9 +217,9 @@ const DataTable = () => {
 
   useEffect(() => {
     if (data) {
-      initEditableRows(data as ITableData[]);
+      initEditableRowsStatus(data as ITableData[]);
     }
-  }, [data, initEditableRows]);
+  }, [data, initEditableRowsStatus]);
 
   return (
     <div className="data-table">
