@@ -26,7 +26,12 @@ const ButtonRemove: FC<IButtonRemoveProps> = ({ rowId, setTableData }) => {
   };
 
   return (
-    <button aria-label="remove row" className="button-remove-row" type="button" onClick={() => handleRemoveIconClick(rowId)}>
+    <button
+      aria-label="remove row"
+      className="button-remove-row"
+      type="button"
+      onClick={() => handleRemoveIconClick(rowId)}
+    >
       <img alt="remove row icon" className="button-remove-row-icon" src={trashIcon} />
     </button>
   );

@@ -49,16 +49,14 @@ $padding: 0.8rem;
       &-cell {
         position: relative;
         height: 3.75rem;
-        padding-left: 0.78rem;
+        padding-left: 0.75rem;
         letter-spacing: 0.01rem;
 
         &-level-icons {
-          position: relative;
-          z-index: 10;
           display: flex;
           gap: 0 0.35rem;
           width: fit-content;
-          padding: 0.15rem 0.4rem 0.15rem 0.15rem;
+          padding: 0.15rem 0.4rem 0 0.15rem;
           background-color: $background-color-table;
           border-radius: 0.4rem;
         }
@@ -76,7 +74,7 @@ $padding: 0.8rem;
           &_horizontal {
             position: absolute;
             top: 1.75rem;
-            width: 0.67rem;
+            width: 0.87rem;
             border-top: $border-line;
           }
         }
@@ -118,11 +116,9 @@ $padding: 0.8rem;
   width: 12%;
 }
 
-// button-remove-row from ButtonRemoveRow component
 /* stylelint-disable selector-class-pattern */
-.data-table__table-body-row:hover
-  > .data-table__table-body-cell
-  .button-remove-row {
+// "button-remove-row" class from ButtonRemoveRow component
+.data-table__table-body-row:hover > .data-table__table-body-cell .button-remove-row {
   visibility: visible;
   cursor: pointer;
 }
@@ -130,5 +126,7 @@ $padding: 0.8rem;
 .data-table__table-body-row:hover
   > .data-table__table-body-cell
   .data-table__table-body-cell-level-icons {
+  position: relative;
+  z-index: 10;
   background-color: $color-third;
 }

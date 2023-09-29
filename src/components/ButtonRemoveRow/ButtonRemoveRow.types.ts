@@ -1,4 +1,4 @@
-import { ITableData } from '../../types';
+import { ITableData } from '../types';
 
 interface IButtonRemoveProps {
   rowId: number;

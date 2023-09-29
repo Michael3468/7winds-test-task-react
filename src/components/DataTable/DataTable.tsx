@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
-import { eID } from '../../assets/constants';
+import { defaultRow, eID } from '../../assets/constants';
 import useFetch from '../../hooks/useFetch';
 import {
   changeRow,
   checkIsRowFinishedEditing,
   countNestedElements,
+  createNewRowOnServer,
   findUpdatedRow,
   formattedNumber,
   isRowEditable,
@@ -13,11 +14,9 @@ import {
   updateRowOnServer,
   updateRowsDataFromServer,
 } from './DataTable.service';
-import { IEditableRows, ITableData, TTableDataItemKey } from './DataTable.types';
+import { IEditableRows, INewRow, ITableData, TTableDataItemKey } from './DataTable.types';
 
-import { ButtonRemoveRow } from '..';
-
-import levelIcon from './img/level-icon.svg';
+import { ButtonAddRow, ButtonRemoveRow } from '..';
 
 import './DataTable.styles.scss';
 
@@ -25,6 +24,7 @@ const DataTable = () => {
   const { data, isLoading, error } = useFetch(`v1/outlay-rows/entity/${eID}/row/list`);
   const [tableData, setTableData] = useState<ITableData[]>([]);
   const [editableRows, setEditableRows] = useState<IEditableRows[]>([]);
+  const [parentId, setParentId] = useState<number | null>(null);
 
   const handleRowClick = async (rowId: number) => {
     const editableRowsStatus = updateEditableRowsStatus(editableRows, rowId);
@@ -37,7 +37,17 @@ const DataTable = () => {
       try {
         const updatedRow = findUpdatedRow(tableData, rowId);
 
-        await updateRowOnServer(updatedRow, rowId);
+        if (parentId) {
+          const newRow: INewRow = { ...defaultRow, ...updatedRow, parentId };
+          delete newRow.id;
+          delete newRow.total;
+
+          setParentId(() => null);
+
+          await createNewRowOnServer(newRow);
+        } else {
+          await updateRowOnServer(updatedRow, rowId);
+        }
         await updateRowsDataFromServer(setTableData);
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -50,7 +60,7 @@ const DataTable = () => {
     (arr: ITableData[]) => {
       const initRows = (dataArr: ITableData[]) => {
         dataArr.forEach((item) => {
-          if (item.total) {
+          if (item.child.length) {
             initRows(item.child);
           }
 
@@ -76,48 +86,50 @@ const DataTable = () => {
   };
 
   function renderNestedArr(arr: ITableData[], level: number = 0) {
-    return arr.map((item) => (
-      <React.Fragment key={item.id}>
+    return arr.map((row) => (
+      <React.Fragment key={row.id}>
         <tr
-          key={item.id}
+          key={row.id}
           className="data-table__table-body-row"
-          onDoubleClick={() => handleRowClick(item.id)}
+          onDoubleClick={() => handleRowClick(row.id)}
         >
           {/* level cell */}
           <td className="data-table__table-body-cell">
             <div
               className="data-table__table-body-cell-level-icons"
-              style={{ marginLeft: `${level * 1.2}rem` }}
+              style={{ marginLeft: `${level ? level * 1.15 : -0.2}rem` }}
             >
-              <img
-                alt="level icon"
-                className="data-table__table-body-cell-level-icons-level"
-                src={levelIcon}
+              <ButtonAddRow
+                parentId={row.id}
+                setEditableRows={setEditableRows}
+                setParentId={setParentId}
+                setTableData={setTableData}
+                tableData={tableData}
               />
 
-              <ButtonRemoveRow rowId={item.id} setTableData={setTableData} />
+              <ButtonRemoveRow rowId={row.id} setTableData={setTableData} />
             </div>
 
             {/* horizontal line */}
             {level > 0 && (
               <div
                 className="data-table__table-body-cell-line_horizontal"
-                style={{ marginLeft: `${level * 1.2 - 0.4}rem` }}
+                style={{ marginLeft: `${level * 1.2 - 0.55}rem` }}
               />
             )}
             {/* horizontal line */}
 
             {/* vertical lines */}
-            {item.child.length > 0 &&
-              Array.from({ length: countNestedElements(item) }).map((_, index) => (
+            {row.child.length > 0 &&
+              Array.from({ length: countNestedElements(row) }).map((_, index: number) => (
                 <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={index}
                   className="data-table__table-body-cell-line_vertical"
                   style={{
-                    marginLeft: `${level * 1.2 + 0.8}rem`,
-                    marginTop: `${index > 0 ? index * 3.7 - 0.38 : index * 3.3}rem`,
-                    height: `${index > 0 ? 4 : 3.3}rem`,
+                    marginLeft: `${level * 1.2 + 0.65}rem`,
+                    marginTop: `${index > 0 ? index * 3.7 - 0.4 + index * 0.04 : 0}rem`,
+                    height: `${index > 0 ? 3.75 : 3.3}rem`,
                   }}
                 />
               ))}
@@ -125,59 +137,57 @@ const DataTable = () => {
           </td>
           {/* level cell */}
 
-          {isRowEditable(item.id, editableRows) ? (
+          {isRowEditable(row.id, editableRows) ? (
             <>
               <td className="data-table__table-body-cell">
                 <input
                   className="data-table__table-body-cell-input"
-                  value={item.rowName}
-                  onChange={(e) => handleInputChange(e, item, 'rowName')}
+                  value={row.rowName}
+                  onChange={(e) => handleInputChange(e, row, 'rowName')}
                 />
               </td>
               <td className="data-table__table-body-cell">
                 <input
                   className="data-table__table-body-cell-input"
-                  value={formattedNumber(item.salary)}
-                  onChange={(e) => handleInputChange(e, item, 'salary')}
+                  value={formattedNumber(row.salary)}
+                  onChange={(e) => handleInputChange(e, row, 'salary')}
                 />
               </td>
               <td className="data-table__table-body-cell">
                 <input
                   className="data-table__table-body-cell-input"
-                  value={formattedNumber(item.equipmentCosts)}
-                  onChange={(e) => handleInputChange(e, item, 'equipmentCosts')}
+                  value={formattedNumber(row.equipmentCosts)}
+                  onChange={(e) => handleInputChange(e, row, 'equipmentCosts')}
                 />
               </td>
               <td className="data-table__table-body-cell">
                 <input
                   className="data-table__table-body-cell-input"
-                  value={formattedNumber(item.overheads)}
-                  onChange={(e) => handleInputChange(e, item, 'overheads')}
+                  value={formattedNumber(row.overheads)}
+                  onChange={(e) => handleInputChange(e, row, 'overheads')}
                 />
               </td>
               <td className="data-table__table-body-cell">
                 <input
                   className="data-table__table-body-cell-input"
-                  value={formattedNumber(item.estimatedProfit)}
-                  onChange={(e) => handleInputChange(e, item, 'estimatedProfit')}
+                  value={formattedNumber(row.estimatedProfit)}
+                  onChange={(e) => handleInputChange(e, row, 'estimatedProfit')}
                 />
               </td>
             </>
           ) : (
             <>
-              <td className="data-table__table-body-cell">{item.rowName}</td>
-              <td className="data-table__table-body-cell">{formattedNumber(item.salary)}</td>
+              <td className="data-table__table-body-cell">{row.rowName}</td>
+              <td className="data-table__table-body-cell">{formattedNumber(row.salary)}</td>
+              <td className="data-table__table-body-cell">{formattedNumber(row.equipmentCosts)}</td>
+              <td className="data-table__table-body-cell">{formattedNumber(row.overheads)}</td>
               <td className="data-table__table-body-cell">
-                {formattedNumber(item.equipmentCosts)}
-              </td>
-              <td className="data-table__table-body-cell">{formattedNumber(item.overheads)}</td>
-              <td className="data-table__table-body-cell">
-                {formattedNumber(item.estimatedProfit)}
+                {formattedNumber(row.estimatedProfit)}
               </td>
             </>
           )}
         </tr>
-        {Array.isArray(item.child) && renderNestedArr(item.child, level + 1)}
+        {Array.isArray(row.child) && renderNestedArr(row.child, level + 1)}
       </React.Fragment>
     ));
   }
