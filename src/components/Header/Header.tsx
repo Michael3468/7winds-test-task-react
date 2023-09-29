@@ -12,7 +12,7 @@ const Header = () => {
 
   const getHeaderNavData = async () => {
     try {
-      const { data } = await axios.get('/src/assets/json/headerNav.json');
+      const { data } = await axios.get('/json/headerNav.json');
       setNavigation(() => data.links);
     } catch (error) {
       // eslint-disable-next-line no-console

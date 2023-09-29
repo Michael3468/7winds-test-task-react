@@ -11,7 +11,7 @@ const Aside = () => {
 
   const getAsideData = useCallback(async () => {
     try {
-      const { data } = await axios.get('src/assets/json/asideNav.json');
+      const { data } = await axios.get('/json/asideNav.json');
       setAsideNav(() => data.links);
     } catch (error) {
       // eslint-disable-next-line no-console
