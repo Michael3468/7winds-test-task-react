@@ -1,10 +1,6 @@
 import { eID } from '../../assets/constants';
 import request from '../../utils/request';
-import {
-  IEditableRows,
-  ITableData,
-  TTableDataItemKey,
-} from './DataTable.types';
+import { IEditableRows, INewRow, ITableData, TTableDataItemKey } from './DataTable.types';
 
 function changeRow(
   value: string,
@@ -24,7 +20,7 @@ function changeRow(
   if (isInputValueTypeCorrect()) {
     const updateRow = (arr: ITableData[]) => {
       updatedRows = arr.filter((dataItem) => {
-        if (dataItem.total) {
+        if (dataItem.child.length) {
           updateRow(dataItem.child);
         }
 
@@ -71,12 +67,21 @@ function countNestedElements(arr: ITableData): number {
   return rez;
 }
 
+async function createNewRowOnServer(newRow: INewRow) {
+  try {
+    await request.post(`/v1/outlay-rows/entity/${eID}/row/create`, newRow);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log(error);
+  }
+}
+
 function findUpdatedRow(tableData: ITableData[], itemId: number): ITableData {
   const updatedRow: ITableData[] = [];
 
   const findRow = (arr: ITableData[]): void => {
     arr.forEach((item) => {
-      if (item.total) {
+      if (item.child.length) {
         findRow(item.child);
       }
 
@@ -93,10 +98,10 @@ function formattedNumber(num: number, separator?: string): string {
   return num.toLocaleString().replace(/,/g, separator ?? ' ');
 }
 
-function isRowEditable(itemId: number, rows: IEditableRows[]): boolean {
-  const filteredRows = rows.filter((row) => row.id === itemId);
+function isRowEditable(rowId: number, rows: IEditableRows[]): boolean {
+  const filteredRows = rows.filter((row) => row.id === rowId);
 
-  return filteredRows[0].isEditable;
+  return filteredRows[0]?.isEditable || false;
 }
 
 function updateEditableRowsStatus(rows: IEditableRows[], rowId: number) {
@@ -129,6 +134,7 @@ async function updateRowsDataFromServer(
 export {
   changeRow,
   checkIsRowFinishedEditing,
+  createNewRowOnServer,
   countNestedElements,
   findUpdatedRow,
   formattedNumber,
