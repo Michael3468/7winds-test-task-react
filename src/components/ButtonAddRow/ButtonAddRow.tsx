@@ -9,9 +9,10 @@ const ButtonAddRow: FC<IButtonAddRowProps> = ({
   tableData,
   setTableData,
   setEditableRows,
+  editableRows,
   setParentId,
 }) => {
-  const randomId = 777;
+  const temporaryId = Date.now();
 
   const addNewRow = (tData: ITableData[]) => {
     const addRow = (dataArr: ITableData[]) =>
@@ -22,7 +23,7 @@ const ButtonAddRow: FC<IButtonAddRowProps> = ({
 
         if (row.id === parentId) {
           row.child.push({
-            id: randomId,
+            id: temporaryId,
             rowName: '',
             salary: 0,
             equipmentCosts: 0,
@@ -45,11 +46,15 @@ const ButtonAddRow: FC<IButtonAddRowProps> = ({
     setTableData(() => result);
 
     setParentId(() => parentId);
-    setEditableRows((prev) => [...prev, { id: randomId, isEditable: true }]);
+    setEditableRows((prev) => [...prev, { id: temporaryId, isEditable: true }]);
   };
 
   const handleButtonClick = () => {
-    addNewRow(tableData);
+    const isRowEditable = editableRows.some((row) => row.isEditable);
+
+    if (!isRowEditable) {
+      addNewRow(tableData);
+    }
   };
 
   return (
