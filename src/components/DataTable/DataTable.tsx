@@ -100,6 +100,7 @@ const DataTable = () => {
               style={{ marginLeft: `${level ? level * 1.15 : -0.2}rem` }}
             >
               <ButtonAddRow
+                editableRows={editableRows}
                 parentId={row.id}
                 setEditableRows={setEditableRows}
                 setParentId={setParentId}
