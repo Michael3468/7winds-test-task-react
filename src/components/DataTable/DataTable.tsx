@@ -98,6 +98,9 @@ const DataTable = () => {
             <div
               className="data-table__table-body-cell-level-icons"
               style={{ marginLeft: `${level ? level * 1.15 : -0.2}rem` }}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+              }}
             >
               <ButtonAddRow
                 editableRows={editableRows}
